@@ -34,8 +34,8 @@
                     <td>{{ app.applicantDetail?.occupation || '-' }}</td>
                     <td>{{ app.reviewedAt ? formatDate(app.reviewedAt) : '-' }}</td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-primary-glass" (click)="openDetail(app)">
-                            <i class="bi bi-check2-square me-1"></i> Review
+                        <button class="btn-action-icon btn-action-primary" (click)="openDetail(app)" title="Review">
+                            <i class="bi bi-check2-square"></i>
                         </button>
                     </td>
                 </tr>

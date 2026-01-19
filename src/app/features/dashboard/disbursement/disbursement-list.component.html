@@ -36,8 +36,8 @@
                     <td class="fw-bold text-primary">{{ formatCurrency(item.totalAmount) }}</td>
                     <td>{{ formatDate(item.requestedAt) }}</td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-primary-glass" (click)="openDetail(item)">
-                            <i class="bi bi-cash-stack me-1"></i> Process
+                        <button class="btn-action-icon btn-action-primary" (click)="openDetail(item)" title="Process">
+                            <i class="bi bi-cash-stack"></i>
                         </button>
                     </td>
                 </tr>
