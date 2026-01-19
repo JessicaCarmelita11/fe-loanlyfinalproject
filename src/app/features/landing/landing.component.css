@@ -6,8 +6,8 @@
     background-color: #050505;
     color: #E2E8F0;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    overflow: hidden;
-    /* Hide overflow to prevent gap */
+    overflow-x: hidden;
+    /* Hide horizontal overflow only */
     letter-spacing: -0.01em;
 }
 
@@ -33,10 +33,11 @@
     top: 0;
     left: 0;
     width: 100%;
-    min-height: 100%;
-    height: auto;
+    height: 100%;
+    max-height: 100vh;
     z-index: 0;
     pointer-events: none;
+    overflow: hidden;
 }
 
 .graphic-ribbon {
@@ -44,8 +45,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: auto;
-    min-height: 4000px;
+    height: 100%;
     transform: translateX(6%);
     /* Shift ribbon to the right */
 }
