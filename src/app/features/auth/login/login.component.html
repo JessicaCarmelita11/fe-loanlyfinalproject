@@ -1,0 +1,120 @@
+<div class="login-page">
+    <!-- Background Decorations -->
+    <div class="bg-decoration bg-decoration-1"></div>
+    <div class="bg-decoration bg-decoration-2"></div>
+    <div class="bg-decoration bg-decoration-3"></div>
+
+    <div class="login-container">
+        <!-- Left Side - Info -->
+        <div class="login-info">
+            <div class="info-content">
+                <span class="secure-badge">
+                    <i class="bi bi-shield-lock-fill me-2"></i>Secure Access
+                </span>
+
+                <h1 class="welcome-title">Welcome to<br><span class="text-gradient">Loanly</span></h1>
+                <p class="welcome-subtitle">
+                    Access your financial dashboard with enterprise-grade security and seamless user experience.
+                </p>
+
+                <h5 class="why-choose-title">Why Choose Us?</h5>
+
+                <div class="feature-cards">
+                    <div class="feature-card feature-card-purple">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Bank-level Security</span>
+                    </div>
+                    <div class="feature-card feature-card-pink">
+                        <i class="bi bi-fingerprint"></i>
+                        <span>Biometric Authentication</span>
+                    </div>
+                    <div class="feature-card feature-card-blue">
+                        <i class="bi bi-phone"></i>
+                        <span>2FA Protection</span>
+                    </div>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">256-bit</div>
+                        <div class="stat-label">Encryption</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-form-section">
+            <div class="login-form-card">
+                <h2 class="form-title">Sign In</h2>
+
+                @if (errorMessage()) {
+                <div class="alert alert-danger d-flex align-items-center gap-2">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ errorMessage() }}
+                </div>
+                }
+
+                <form (ngSubmit)="onSubmit()" class="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Username or Email</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-envelope input-icon"></i>
+                            <input type="text" class="form-control" [(ngModel)]="credentials.usernameOrEmail"
+                                name="usernameOrEmail" placeholder="Enter your username or email"
+                                autocomplete="username">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <i class="bi bi-lock input-icon"></i>
+                            <input [type]="showPassword() ? 'text' : 'password'" class="form-control"
+                                [(ngModel)]="credentials.password" name="password" placeholder="Enter your password"
+                                autocomplete="current-password">
+                            <button type="button" class="toggle-password" (click)="togglePassword()">
+                                <i class="bi" [class.bi-eye]="!showPassword()"
+                                    [class.bi-eye-slash]="showPassword()"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-signin" [disabled]="isLoading()">
+                        @if (isLoading()) {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        Signing in...
+                        } @else {
+                        Sign In <i class="bi bi-arrow-right ms-2"></i>
+                        }
+                    </button>
+                </form>
+
+                <div class="form-footer">
+                    <p>Need help? <a href="mailto:support@loanly.id">Contact Support</a></p>
+                    <div class="footer-links">
+                        <a href="#">Privacy</a>
+                        <a href="#">Terms</a>
+                        <a href="#">Security</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

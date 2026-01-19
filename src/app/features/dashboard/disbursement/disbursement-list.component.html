@@ -1,0 +1,170 @@
+<div class="page-header">
+    <h1 class="page-title">Pencairan Pinjaman</h1>
+    <p class="page-subtitle">Process fund disbursements for approved customers</p>
+</div>
+
+<div class="glass-card-solid p-4">
+    @if (isLoading()) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    } @else {
+    <div class="table-responsive">
+        <table class="table table-glass">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Plafond</th>
+                    <th>Amount</th>
+                    <th>Tenor</th>
+                    <th>Interest</th>
+                    <th>Total</th>
+                    <th>Requested</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (item of disbursements(); track item.id) {
+                <tr>
+                    <td><strong>#{{ item.id }}</strong></td>
+                    <td>{{ item.plafondName }}</td>
+                    <td>{{ formatCurrency(item.amount) }}</td>
+                    <td>{{ item.tenorMonth }} bulan</td>
+                    <td>{{ item.interestRate }}%</td>
+                    <td class="fw-bold text-primary">{{ formatCurrency(item.totalAmount) }}</td>
+                    <td>{{ formatDate(item.requestedAt) }}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-primary-glass" (click)="openDetail(item)">
+                            <i class="bi bi-cash-stack me-1"></i> Process
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="bi bi-cash-stack fs-1 d-block mb-2 opacity-50"></i>
+                        No pending disbursements
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
+
+<!-- Detail Modal -->
+@if (showDetailModal() && selectedDisbursement()) {
+<div class="modal-backdrop" (click)="closeModal()"></div>
+<div class="modal-container modal-lg">
+    <div class="modal-content glass-card-solid">
+        <div class="modal-header">
+            <h5 class="modal-title">Disbursement #{{ selectedDisbursement()?.id }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+            <!-- Summary Cards -->
+            <div class="disbursement-summary mb-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <div class="summary-label">Nominal Dicairkan</div>
+                            <div class="summary-value">{{ formatCurrency(selectedDisbursement()?.amount || 0) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card">
+                            <div class="summary-label">Bunga ({{ selectedDisbursement()?.interestRate }}%)</div>
+                            <div class="summary-value text-warning">{{
+                                formatCurrency(selectedDisbursement()?.interestAmount || 0) }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="summary-card highlight">
+                            <div class="summary-label">Total Pengembalian</div>
+                            <div class="summary-value text-danger">{{
+                                formatCurrency(selectedDisbursement()?.totalAmount || 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Payment Info -->
+            <div class="alert alert-info mb-4">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                    <div>
+                        <strong>Angsuran per Bulan:</strong>
+                        <span class="fs-5 fw-bold text-primary ms-2">
+                            {{ formatCurrency(getMonthlyPayment()) }}
+                        </span>
+                        <span class="text-muted"> × {{ selectedDisbursement()?.tenorMonth }} bulan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-3">Detail Pencairan</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="text-muted">Plafond</td>
+                            <td><strong>{{ selectedDisbursement()?.plafondName }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Tenor</td>
+                            <td>{{ selectedDisbursement()?.tenorMonth }} bulan</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Sisa Limit</td>
+                            <td class="text-success">{{ formatCurrency(selectedDisbursement()?.remainingLimit || 0) }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-3">Informasi Pengajuan</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="text-muted">Tanggal Pengajuan</td>
+                            <td>{{ formatDate(selectedDisbursement()?.requestedAt || '') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Status</td>
+                            <td><span class="badge-status badge-pending">{{ selectedDisbursement()?.status }}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="mb-3">
+                <label class="form-label">Note</label>
+                <textarea class="form-control" rows="2" placeholder="Add processing notes..." [ngModel]="actionNote()"
+                    (ngModelChange)="actionNote.set($event)"></textarea>
+                <small class="text-muted">Required if cancelling</small>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" (click)="cancelDisbursement()"
+                [disabled]="isProcessing()">
+                <i class="bi bi-x-lg me-1"></i> Cancel
+            </button>
+            <button type="button" class="btn btn-primary-glass" (click)="processDisbursement()"
+                [disabled]="isProcessing()">
+                @if (isProcessing()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                <i class="bi bi-check-lg me-1"></i> Disburse Funds
+            </button>
+        </div>
+    </div>
+</div>
+}

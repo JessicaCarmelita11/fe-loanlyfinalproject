@@ -1,0 +1,70 @@
+<div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.show]="sidebarOpen">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">L</div>
+            <span class="sidebar-title">Loanly</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                @for (item of menuItems; track item.route) {
+                <li class="sidebar-menu-item">
+                    <a [routerLink]="item.route" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }" class="sidebar-menu-link"
+                        (click)="sidebarOpen = false">
+                        <i [class]="'bi ' + item.icon"></i>
+                        <span>{{ item.label }}</span>
+                    </a>
+                </li>
+                }
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">{{ userInitials }}</div>
+                <div class="user-details">
+                    <div class="user-name">{{ currentUser?.fullName || currentUser?.username }}</div>
+                    <div class="user-role">{{ primaryRole }}</div>
+                </div>
+            </div>
+            <button class="btn-logout" (click)="logout()">
+                <i class="bi bi-box-arrow-left"></i>
+                <span class="logout-text">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <button class="btn-menu d-lg-none" (click)="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <div class="topbar-title">Dashboard</div>
+
+            <div class="topbar-user">
+                <div class="topbar-notifications">
+                    <button class="btn-icon">
+                        <i class="bi bi-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                <div class="topbar-avatar">{{ userInitials }}</div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="main-content">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>
+
+<!-- Overlay for mobile -->
+@if (sidebarOpen) {
+<div class="sidebar-overlay" (click)="sidebarOpen = false"></div>
+}

@@ -1,0 +1,193 @@
+<div class="page-header">
+    <h1 class="page-title">Review Plafond Applications</h1>
+    <p class="page-subtitle">Review and process incoming plafond applications</p>
+</div>
+
+<div class="glass-card-solid p-4">
+    @if (isLoading()) {
+    <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    } @else {
+    <div class="table-responsive">
+        <table class="table table-glass">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Plafond</th>
+                    <th>Monthly Income</th>
+                    <th>Occupation</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (app of applications(); track app.id) {
+                <tr>
+                    <td><strong>#{{ app.id }}</strong></td>
+                    <td>{{ app.username || '-' }}</td>
+                    <td>{{ app.plafond?.name || '-' }}</td>
+                    <td>{{ formatCurrency(app.applicantDetail?.monthlyIncome || 0) }}</td>
+                    <td>{{ app.applicantDetail?.occupation || '-' }}</td>
+                    <td>{{ formatDate(app.registeredAt) }}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-primary-glass" (click)="openDetail(app)">
+                            <i class="bi bi-eye me-1"></i> Review
+                        </button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-clipboard-check fs-1 d-block mb-2 opacity-50"></i>
+                        No pending applications for review
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>
+
+<!-- Detail Modal -->
+@if (showDetailModal() && selectedApplication()) {
+<div class="modal-backdrop" (click)="closeModal()"></div>
+<div class="modal-container modal-lg">
+    <div class="modal-content glass-card-solid">
+        <div class="modal-header">
+            <h5 class="modal-title">Application #{{ selectedApplication()?.id }}</h5>
+            <button type="button" class="btn-close" (click)="closeModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-3">Applicant Information</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="text-muted">Customer</td>
+                            <td><strong>{{ selectedApplication()?.username }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Full Name</td>
+                            <td><strong>{{ selectedApplication()?.applicantDetail?.fullName || '-' }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">NIK</td>
+                            <td><strong>{{ selectedApplication()?.applicantDetail?.nik }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Birth Place</td>
+                            <td>{{ selectedApplication()?.applicantDetail?.birthPlace }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Birth Date</td>
+                            <td>{{ selectedApplication()?.applicantDetail?.birthDate }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Phone</td>
+                            <td>{{ selectedApplication()?.applicantDetail?.phone }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">NPWP</td>
+                            <td>{{ selectedApplication()?.applicantDetail?.npwp || '-' }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-3">Financial Information</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="text-muted">Occupation</td>
+                            <td><strong>{{ selectedApplication()?.applicantDetail?.occupation }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Monthly Income</td>
+                            <td class="text-success fw-bold">{{
+                                formatCurrency(selectedApplication()?.applicantDetail?.monthlyIncome || 0) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Marital Status</td>
+                            <td>{{ selectedApplication()?.applicantDetail?.maritalStatus || '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Plafond</td>
+                            <td>{{ selectedApplication()?.plafond?.name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Max Amount</td>
+                            <td>{{ formatCurrency(selectedApplication()?.plafond?.maxAmount || 0) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Applied Date</td>
+                            <td>{{ formatDate(selectedApplication()?.registeredAt || '') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Documents Section -->
+            @if (selectedApplication()?.documents && selectedApplication()!.documents.length > 0) {
+            <div class="mt-4">
+                <h6 class="text-muted mb-3"><i class="bi bi-file-earmark-text me-2"></i>Uploaded Documents</h6>
+                <div class="row g-3">
+                    @for (doc of selectedApplication()!.documents; track doc.id || $index) {
+                    <div class="col-md-3">
+                        <div class="document-card p-2 border rounded text-center">
+                            <div class="fw-semibold small mb-2">{{ doc.documentType || doc.fileName || 'Document' }}
+                            </div>
+                            <img [src]="getDocumentUrl(doc.fileUrl)" class="img-thumbnail mb-2"
+                                style="height: 100px; width: 100%; object-fit: cover;"
+                                alt="{{ doc.documentType || 'Document' }}">
+                            <div class="d-flex gap-1">
+                                <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1"
+                                    (click)="openDocument(doc.fileUrl); $event.stopPropagation()">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                    (click)="downloadDocument(doc.fileUrl, doc.fileName || doc.documentType); $event.stopPropagation()">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+            } @else {
+            <div class="mt-4">
+                <h6 class="text-muted mb-3"><i class="bi bi-file-earmark-text me-2"></i>Uploaded Documents</h6>
+                <p class="text-muted small"><i class="bi bi-info-circle me-1"></i>No documents uploaded</p>
+            </div>
+            }
+
+            <hr>
+
+            <div class="mb-3">
+                <label class="form-label">Note (optional)</label>
+                <textarea class="form-control" rows="3" placeholder="Add review notes..." [ngModel]="actionNote()"
+                    (ngModelChange)="actionNote.set($event)"></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" (click)="reviewApplication(false)"
+                [disabled]="isProcessing()">
+                <i class="bi bi-x-lg me-1"></i> Reject
+            </button>
+            <button type="button" class="btn btn-primary-glass" (click)="reviewApplication(true)"
+                [disabled]="isProcessing()">
+                @if (isProcessing()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                <i class="bi bi-check-lg me-1"></i> Proceed to Approval
+            </button>
+        </div>
+    </div>
+</div>
+}
