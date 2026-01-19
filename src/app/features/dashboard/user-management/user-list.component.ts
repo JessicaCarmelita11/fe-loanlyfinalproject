@@ -19,6 +19,26 @@ import { User, Role } from '../../../core/models';
     </div>
 
     <div class="glass-card-solid p-4">
+      <!-- Tabs -->
+      <div class="user-tabs mb-4">
+        <button 
+          class="tab-btn" 
+          [class.active]="activeTab === 'staff'"
+          (click)="activeTab = 'staff'">
+          <i class="bi bi-building me-2"></i>
+          Internal Staff
+          <span class="tab-count">{{ staffUsers.length }}</span>
+        </button>
+        <button 
+          class="tab-btn" 
+          [class.active]="activeTab === 'customer'"
+          (click)="activeTab = 'customer'">
+          <i class="bi bi-people me-2"></i>
+          Customers
+          <span class="tab-count">{{ customerUsers.length }}</span>
+        </button>
+      </div>
+
       <div class="mb-4">
         <input 
           type="text" 
@@ -52,7 +72,7 @@ import { User, Role } from '../../../core/models';
                 <tr>
                   <td>
                     <div class="d-flex align-items-center gap-2">
-                      <div class="user-avatar-sm">{{ getInitial(user) }}</div>
+                      <div class="user-avatar-sm" [class.customer-avatar]="isCustomerUserCheck(user)">{{ getInitial(user) }}</div>
                       <span>{{ user.fullName || '-' }}</span>
                     </div>
                   </td>
@@ -60,7 +80,7 @@ import { User, Role } from '../../../core/models';
                   <td>{{ user.email }}</td>
                   <td>
                     @for (roleName of getUserRoleNames(user); track roleName) {
-                      <span class="badge bg-primary me-1">{{ roleName }}</span>
+                      <span class="badge me-1" [class]="getRoleBadgeClass(roleName)">{{ roleName }}</span>
                     }
                   </td>
                   <td>
@@ -81,7 +101,7 @@ import { User, Role } from '../../../core/models';
                 <tr>
                   <td colspan="6" class="text-center py-5 text-muted">
                     <i class="bi bi-people fs-1 d-block mb-2 opacity-50"></i>
-                    No users found
+                    {{ activeTab === 'staff' ? 'No internal staff found' : 'No customers found' }}
                   </td>
                 </tr>
               }
@@ -198,6 +218,47 @@ import { User, Role } from '../../../core/models';
     }
   `,
   styles: [`
+    /* Tabs */
+    .user-tabs {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 16px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .tab-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.9);
+    }
+    .tab-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.5);
+      color: #60A5FA;
+    }
+    .tab-count {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-left: 8px;
+    }
+    .tab-btn.active .tab-count {
+      background: rgba(59, 130, 246, 0.3);
+    }
+
+    /* User Avatar */
     .user-avatar-sm {
       width: 36px;
       height: 36px;
@@ -210,6 +271,11 @@ import { User, Role } from '../../../core/models';
       font-weight: 600;
       font-size: 14px;
     }
+    .user-avatar-sm.customer-avatar {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    }
+
+    /* Modal */
     .modal-backdrop {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -281,6 +347,7 @@ export class UserListComponent implements OnInit {
   roles = signal<Role[]>([]);
   isLoading = signal(true);
   searchTerm = '';
+  activeTab: 'staff' | 'customer' = 'staff';
 
   showModal = signal(false);
   modalMode: 'create' | 'edit' = 'create';
@@ -324,15 +391,50 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  get filteredUsers(): User[] {
-    const query = this.searchTerm.toLowerCase();
-    if (!query) return this.users();
+  // Get staff users (non-customer roles)
+  get staffUsers(): User[] {
+    return this.users().filter(user => {
+      const roleNames = this.getUserRoleNames(user);
+      return !roleNames.includes('CUSTOMER');
+    });
+  }
 
-    return this.users().filter(user =>
+  // Get customer users
+  get customerUsers(): User[] {
+    return this.users().filter(user => {
+      const roleNames = this.getUserRoleNames(user);
+      return roleNames.includes('CUSTOMER');
+    });
+  }
+
+  get filteredUsers(): User[] {
+    const baseList = this.activeTab === 'staff' ? this.staffUsers : this.customerUsers;
+    const query = this.searchTerm.toLowerCase();
+    if (!query) return baseList;
+
+    return baseList.filter(user =>
       user.username.toLowerCase().includes(query) ||
       user.email.toLowerCase().includes(query) ||
       user.fullName?.toLowerCase().includes(query)
     );
+  }
+
+  // Check if user is a customer (for avatar styling)
+  isCustomerUserCheck(user: User): boolean {
+    const roleNames = this.getUserRoleNames(user);
+    return roleNames.includes('CUSTOMER');
+  }
+
+  // Get badge class based on role
+  getRoleBadgeClass(roleName: string): string {
+    switch (roleName) {
+      case 'SUPER_ADMIN': return 'bg-danger';
+      case 'MARKETING': return 'bg-info';
+      case 'BRANCH_MANAGER': return 'bg-warning';
+      case 'BACK_OFFICE': return 'bg-secondary';
+      case 'CUSTOMER': return 'bg-success';
+      default: return 'bg-primary';
+    }
   }
 
   getInitial(user: User): string {
