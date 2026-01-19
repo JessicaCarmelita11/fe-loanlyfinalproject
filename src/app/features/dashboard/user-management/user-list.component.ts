@@ -218,44 +218,79 @@ import { User, Role } from '../../../core/models';
     }
   `,
   styles: [`
-    /* Tabs */
+    /* Tabs - Modern Pill Style */
     .user-tabs {
       display: flex;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 16px;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px;
+      border-radius: 16px;
+      width: fit-content;
     }
     .tab-btn {
       background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: none;
       border-radius: 12px;
-      padding: 12px 20px;
-      color: rgba(255, 255, 255, 0.6);
+      padding: 12px 24px;
+      color: rgba(255, 255, 255, 0.5);
       font-weight: 500;
       font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       align-items: center;
+      gap: 8px;
     }
     .tab-btn:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255, 255, 255, 0.8);
     }
     .tab-btn.active {
-      background: rgba(59, 130, 246, 0.2);
-      border-color: rgba(59, 130, 246, 0.5);
-      color: #60A5FA;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(20, 184, 166, 0.3) 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+    .tab-btn i {
+      font-size: 16px;
     }
     .tab-count {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2px 8px;
-      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 20px;
       font-size: 12px;
-      margin-left: 8px;
+      font-weight: 600;
     }
     .tab-btn.active .tab-count {
-      background: rgba(59, 130, 246, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Role Badges - Transparent */
+    .role-badge {
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .role-super-admin {
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+    }
+    .role-marketing {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22D3EE;
+    }
+    .role-branch-manager {
+      background: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+    }
+    .role-back-office {
+      background: rgba(107, 114, 128, 0.15);
+      color: #9CA3AF;
+    }
+    .role-customer {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
     }
 
     /* User Avatar */
@@ -428,12 +463,12 @@ export class UserListComponent implements OnInit {
   // Get badge class based on role
   getRoleBadgeClass(roleName: string): string {
     switch (roleName) {
-      case 'SUPER_ADMIN': return 'bg-danger';
-      case 'MARKETING': return 'bg-info';
-      case 'BRANCH_MANAGER': return 'bg-warning';
-      case 'BACK_OFFICE': return 'bg-secondary';
-      case 'CUSTOMER': return 'bg-success';
-      default: return 'bg-primary';
+      case 'SUPER_ADMIN': return 'role-badge role-super-admin';
+      case 'MARKETING': return 'role-badge role-marketing';
+      case 'BRANCH_MANAGER': return 'role-badge role-branch-manager';
+      case 'BACK_OFFICE': return 'role-badge role-back-office';
+      case 'CUSTOMER': return 'role-badge role-customer';
+      default: return 'role-badge role-customer';
     }
   }
 
