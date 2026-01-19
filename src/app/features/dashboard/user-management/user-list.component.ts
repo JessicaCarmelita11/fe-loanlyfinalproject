@@ -39,13 +39,22 @@ import { User, Role } from '../../../core/models';
         </button>
       </div>
 
-      <div class="mb-4">
+      <div class="mb-4 d-flex gap-3 align-items-center">
         <input 
           type="text" 
           class="form-control" 
           style="max-width: 300px"
           placeholder="Search users..."
           [(ngModel)]="searchTerm">
+        @if (activeTab === 'staff') {
+          <select class="form-select" style="max-width: 200px" [(ngModel)]="roleFilter">
+            <option value="">All Roles</option>
+            <option value="SUPER_ADMIN">Super Admin</option>
+            <option value="MARKETING">Marketing</option>
+            <option value="BRANCH_MANAGER">Branch Manager</option>
+            <option value="BACK_OFFICE">Back Office</option>
+          </select>
+        }
       </div>
       
       @if (isLoading()) {
@@ -383,6 +392,7 @@ export class UserListComponent implements OnInit {
   isLoading = signal(true);
   searchTerm = '';
   activeTab: 'staff' | 'customer' = 'staff';
+  roleFilter = '';
 
   showModal = signal(false);
   modalMode: 'create' | 'edit' = 'create';
@@ -444,14 +454,27 @@ export class UserListComponent implements OnInit {
 
   get filteredUsers(): User[] {
     const baseList = this.activeTab === 'staff' ? this.staffUsers : this.customerUsers;
-    const query = this.searchTerm.toLowerCase();
-    if (!query) return baseList;
+    let result = baseList;
 
-    return baseList.filter(user =>
-      user.username.toLowerCase().includes(query) ||
-      user.email.toLowerCase().includes(query) ||
-      user.fullName?.toLowerCase().includes(query)
-    );
+    // Apply role filter for staff tab
+    if (this.activeTab === 'staff' && this.roleFilter) {
+      result = result.filter(user => {
+        const roleNames = this.getUserRoleNames(user);
+        return roleNames.includes(this.roleFilter);
+      });
+    }
+
+    // Apply search filter
+    const query = this.searchTerm.toLowerCase();
+    if (query) {
+      result = result.filter(user =>
+        user.username.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        user.fullName?.toLowerCase().includes(query)
+      );
+    }
+
+    return result;
   }
 
   // Check if user is a customer (for avatar styling)

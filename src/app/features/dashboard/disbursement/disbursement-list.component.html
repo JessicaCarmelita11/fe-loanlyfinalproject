@@ -16,6 +16,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Customer</th>
                     <th>Plafond</th>
                     <th>Amount</th>
                     <th>Tenor</th>
@@ -29,6 +30,7 @@
                 @for (item of disbursements(); track item.id) {
                 <tr>
                     <td><strong>#{{ item.id }}</strong></td>
+                    <td>{{ item.customerName || item.customerUsername || '-' }}</td>
                     <td>{{ item.plafondName }}</td>
                     <td>{{ formatCurrency(item.amount) }}</td>
                     <td>{{ item.tenorMonth }} bulan</td>
@@ -43,7 +45,7 @@
                 </tr>
                 } @empty {
                 <tr>
-                    <td colspan="8" class="text-center py-5 text-muted">
+                    <td colspan="9" class="text-center py-5 text-muted">
                         <i class="bi bi-cash-stack fs-1 d-block mb-2 opacity-50"></i>
                         No pending disbursements
                     </td>

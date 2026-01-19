@@ -303,8 +303,17 @@ export class HistoryListComponent implements OnInit {
 
   get filteredPlafondHistory(): PlafondHistory[] {
     const q = this.searchPlafond.toLowerCase();
-    if (!q) return this.plafondHistory();
-    return this.plafondHistory().filter(h =>
+    let data = this.plafondHistory();
+
+    // Sort by date descending (newest first)
+    data = [...data].sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      return dateB - dateA;
+    });
+
+    if (!q) return data;
+    return data.filter(h =>
       h.customerName?.toLowerCase().includes(q) ||
       h.username?.toLowerCase().includes(q) ||
       h.actionByRole?.toLowerCase().includes(q) ||
@@ -315,8 +324,17 @@ export class HistoryListComponent implements OnInit {
 
   get filteredDisbursements(): any[] {
     const q = this.searchDisbursement.toLowerCase();
-    if (!q) return this.disbursements();
-    return this.disbursements().filter((d: any) =>
+    let data = this.disbursements();
+
+    // Sort by date descending (newest first)
+    data = [...data].sort((a: any, b: any) => {
+      const dateA = new Date(a.requestedAt || 0).getTime();
+      const dateB = new Date(b.requestedAt || 0).getTime();
+      return dateB - dateA;
+    });
+
+    if (!q) return data;
+    return data.filter((d: any) =>
       d.plafondName?.toLowerCase().includes(q) ||
       d.customerName?.toLowerCase().includes(q) ||
       d.customerUsername?.toLowerCase().includes(q)

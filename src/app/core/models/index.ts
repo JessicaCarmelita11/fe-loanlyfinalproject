@@ -107,6 +107,8 @@ export type PlafondStatus =
 export interface Disbursement {
     id: number;
     userPlafondId: number;
+    customerName?: string;
+    customerUsername?: string;
     plafondName: string;
     amount: number;
     interestRate: number;
