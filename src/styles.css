@@ -809,6 +809,45 @@ table tbody td {
   padding: 16px 24px;
 }
 
+/* Fix for highlighted/blocked text in modals */
+.modal-content mark,
+.modal-content strong,
+.modal-content b,
+.modal-content .fw-bold,
+.modal-content .fw-semibold {
+  background: transparent;
+  color: inherit;
+}
+
+.modal-content .detail-value,
+.modal-content .info-value {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* Override Bootstrap mark */
+mark {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* Detail modal text styling */
+.detail-row strong,
+.detail-row .value {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+/* Badge styling in modals */
+.modal-content .badge {
+  background: rgba(96, 165, 250, 0.2);
+  color: #60A5FA;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
 /* ==========================================
    Utilities
    ========================================== */
