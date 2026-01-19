@@ -30,19 +30,19 @@ interface PlafondHistory {
       <p class="page-subtitle">View application history and status</p>
     </div>
     
-    <!-- Tabs -->
-    <ul class="nav nav-pills mb-4">
-      <li class="nav-item">
-        <button class="nav-link" [class.active]="activeTab() === 'plafond'" (click)="activeTab.set('plafond')">
-          <i class="bi bi-credit-card me-2"></i>Pengajuan Plafond
-        </button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" [class.active]="activeTab() === 'disbursement'" (click)="activeTab.set('disbursement')">
-          <i class="bi bi-cash-coin me-2"></i>Pengajuan Pencairan
-        </button>
-      </li>
-    </ul>
+    <!-- Tabs - Modern Pill Style -->
+    <div class="history-tabs mb-4">
+      <button class="tab-btn" [class.active]="activeTab() === 'plafond'" (click)="activeTab.set('plafond')">
+        <i class="bi bi-credit-card"></i>
+        Pengajuan Plafond
+        <span class="tab-count">{{ plafondHistory().length }}</span>
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'disbursement'" (click)="activeTab.set('disbursement')">
+        <i class="bi bi-cash-coin"></i>
+        Pengajuan Pencairan
+        <span class="tab-count">{{ disbursements().length }}</span>
+      </button>
+    </div>
 
     <!-- Plafond Tab Content -->
     @if (activeTab() === 'plafond') {
@@ -82,7 +82,7 @@ interface PlafondHistory {
                       </span>
                     </td>
                     <td>{{ h.actionByUsername || 'User #' + h.actionByUserId }}</td>
-                    <td><span class="badge bg-secondary">{{ h.actionByRole }}</span></td>
+                    <td><span class="role-badge" [class]="getRoleBadgeClass(h.actionByRole)">{{ h.actionByRole }}</span></td>
                     <td>{{ h.note || '-' }}</td>
                     <td>{{ formatDate(h.createdAt || '') }}</td>
                   </tr>
@@ -159,35 +159,97 @@ interface PlafondHistory {
     }
   `,
   styles: [`
-    .nav-pills .nav-link {
-      color: #6c757d;
-      border-radius: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      margin-right: 0.5rem;
-      transition: all 0.3s ease;
+    /* Tabs - Modern Pill Style */
+    .history-tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px;
+      border-radius: 16px;
+      width: fit-content;
     }
-    .nav-pills .nav-link.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .nav-pills .nav-link:hover:not(.active) {
-      background: rgba(102, 126, 234, 0.1);
+    .tab-btn:hover {
+      color: rgba(255, 255, 255, 0.8);
     }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(20, 184, 166, 0.3) 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+    .tab-btn i {
+      font-size: 16px;
+    }
+    .tab-count {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .tab-btn.active .tab-count {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Role Badges - Transparent */
+    .role-badge {
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .role-super-admin {
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
+    }
+    .role-marketing {
+      background: rgba(6, 182, 212, 0.15);
+      color: #22D3EE;
+    }
+    .role-branch-manager {
+      background: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+    }
+    .role-back-office {
+      background: rgba(107, 114, 128, 0.15);
+      color: #9CA3AF;
+    }
+    .role-customer {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
+    }
+
+    /* Status Badges */
     .badge-pending, .badge-waiting {
-      background: rgba(255, 193, 7, 0.2);
-      color: #ffc107;
+      background: rgba(255, 193, 7, 0.15);
+      color: #FBBF24;
     }
     .badge-approved, .badge-disbursed {
-      background: rgba(40, 167, 69, 0.2);
-      color: #28a745;
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
     }
     .badge-rejected, .badge-cancelled {
-      background: rgba(220, 53, 69, 0.2);
-      color: #dc3545;
+      background: rgba(239, 68, 68, 0.15);
+      color: #F87171;
     }
     .badge-processing {
-      background: rgba(23, 162, 184, 0.2);
-      color: #17a2b8;
+      background: rgba(6, 182, 212, 0.15);
+      color: #22D3EE;
     }
   `]
 })
@@ -259,6 +321,18 @@ export class HistoryListComponent implements OnInit {
       d.customerName?.toLowerCase().includes(q) ||
       d.customerUsername?.toLowerCase().includes(q)
     );
+  }
+
+  // Get badge class based on role
+  getRoleBadgeClass(roleName: string): string {
+    switch (roleName) {
+      case 'SUPER_ADMIN': return 'role-badge role-super-admin';
+      case 'MARKETING': return 'role-badge role-marketing';
+      case 'BRANCH_MANAGER': return 'role-badge role-branch-manager';
+      case 'BACK_OFFICE': return 'role-badge role-back-office';
+      case 'CUSTOMER': return 'role-badge role-customer';
+      default: return 'role-badge role-customer';
+    }
   }
 
   formatCurrency(amount: number): string {
