@@ -51,7 +51,7 @@ import { ApiService } from '../../../core/services/api.service';
                       <br><small class="text-muted">{{ c.customerPhone }}</small>
                     }
                   </td>
-                  <td><span class="badge bg-info">{{ c.plafondName || '-' }}</span></td>
+                  <td><span [class]="getPlafondBadgeClass(c.plafondName)">{{ c.plafondName || '-' }}</span></td>
                   <td class="text-success fw-bold">{{ formatCurrency(c.approvedLimit || 0) }}</td>
                   <td>{{ formatCurrency(c.usedAmount || 0) }}</td>
                   <td class="fw-bold">{{ formatCurrency(c.availableLimit || 0) }}</td>
@@ -121,5 +121,19 @@ export class CustomerListComponent implements OnInit {
       month: 'short',
       year: 'numeric'
     });
+  }
+
+  getPlafondBadgeClass(name: string): string {
+    if (!name) return 'badge bg-secondary';
+
+    const n = name.toLowerCase();
+    if (n.includes('plus')) return 'badge badge-plafond-plus';
+    if (n.includes('bronze')) return 'badge badge-plafond-bronze';
+    if (n.includes('silver')) return 'badge badge-plafond-silver';
+    if (n.includes('gold')) return 'badge badge-plafond-gold';
+    if (n.includes('diamond')) return 'badge badge-plafond-diamond';
+    if (n.includes('vvip')) return 'badge badge-plafond-vvip';
+
+    return 'badge bg-info'; // Default fallback
   }
 }

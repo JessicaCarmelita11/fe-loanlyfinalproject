@@ -20,12 +20,27 @@ export class LandingComponent implements OnInit, OnDestroy {
     currentWordIndex = signal(0);
     currentWord = signal(this.heroWords[0]);
     isAnimating = signal(false);
+    isMobileMenuOpen = signal(false);
     private rotationInterval: any;
+
+    toggleMobileMenu() {
+        this.isMobileMenuOpen.update(v => !v);
+        // Prevent scrolling when menu is open
+        if (this.isMobileMenuOpen()) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
 
     @HostListener('window:scroll', [])
     onWindowScroll() {
         // Show menu when scrolled down 50px
-        this.showFloatingMenu = window.scrollY > 50;
+        const shouldShow = window.scrollY > 50;
+        // Only update if changed to avoid unnecessary change detection cycles
+        if (this.showFloatingMenu !== shouldShow) {
+            this.showFloatingMenu = shouldShow;
+        }
     }
 
     constructor(private apiService: ApiService) { }

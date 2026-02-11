@@ -1,14 +1,37 @@
-/* Landing Page Styles - Hyperflow Exact Match (Final Refinement) */
+/* Landing Page Styles - Light Theme ("Pop Up" Aesthetic) */
 
 :host {
-    position: relative;
     display: block;
-    background-color: #050505;
-    color: #E2E8F0;
+    position: relative;
+    /* PALETTE - BEAUTIFIED */
+    --primary-teal: #0D9488;
+    /* Vibrant Teal 600 */
+    --primary-teal-light: #14B8A6;
+    /* Teal 500 */
+    --primary-blue: #2563EB;
+    /* Vibrant Blue 600 */
+    --primary-blue-light: #3B82F6;
+    /* Blue 500 */
+    --text-main: #0F172A;
+    /* Deep Slate 900 - Premium Dark */
+    --text-muted: #475569;
+    /* Slate 600 */
+    --bg-white: #FFFFFF;
+
+    background-color: var(--bg-white);
+    color: var(--text-main);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
-    /* Hide horizontal overflow only */
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    /* Tighter, more modern spacing */
+}
+
+/* Dark Button Text Fix */
+.btn-dark,
+.btn-dark:hover,
+.btn-dark:focus,
+.btn-dark:active {
+    color: white !important;
 }
 
 /* 1. BACKGROUND EFFECTS */
@@ -18,13 +41,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    /* Dot Grid Pattern */
-    background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-    background-size: 50px 50px;
+    /* Sharper dot pattern for "Pop" */
+    background-image: radial-gradient(rgba(15, 23, 42, 0.12) 1.5px, transparent 1.5px);
+    background-size: 32px 32px;
     z-index: 0;
     pointer-events: none;
-    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
 }
 
 /* Custom Graphic Ribbon */
@@ -33,7 +56,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 400vh;
+    height: 550vh;
     z-index: 0;
     pointer-events: none;
     overflow: visible;
@@ -46,10 +69,16 @@
     width: 100%;
     height: 100%;
     transform: translateX(6%);
-    /* Shift ribbon to the right */
 }
 
-/* 2. FLOATING MENU */
+/* Mobile: Hide ribbon to prevent overflow issues */
+@media (max-width: 991.98px) {
+    .graphic-ribbon-container {
+        display: none;
+    }
+}
+
+/* 2. FLOATING MENU - "Pop Up" Style */
 .floating-menu-container {
     position: fixed;
     bottom: 40px;
@@ -71,40 +100,71 @@
 }
 
 .glass-pill {
-    background: rgba(20, 20, 20, 0.6);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* High contrast glass pill */
+    background: rgba(207, 218, 221, 0.233);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    /* Lighter top border for shine */
+    border-bottom-color: rgba(200, 200, 200, 0.4);
+    /* Darker bottom for depth */
     border-radius: 99px;
-    padding: 20px;
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+    padding: 12px 24px;
+    /* Stronger shadow for "pop" */
+    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.1), 0 8px 16px -4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 991.98px) {
+    .floating-menu-container {
+        display: none !important;
+    }
+
+    .mobile-menu-overlay {
+        animation: slideInDown 0.3s ease-out;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 }
 
 .menu-link {
-    color: #94A3B8;
+    color: var(--text-muted);
     text-decoration: none;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 10px 20px;
     border-radius: 99px;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .menu-link:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary-blue);
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
 }
 
 .logo-box {
-    width: 32px;
-    height: 32px;
-    background: white;
-    color: black;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    background: var(--text-main);
+    color: white;
+    border-radius: 12px;
+    /* Somewhat squarer for modern look */
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 900;
-    font-size: 16px;
+    font-weight: 800;
+    font-size: 18px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* 3. HERO SECTION */
@@ -117,12 +177,13 @@
 }
 
 .hero-title {
-    font-weight: 800;
+    font-weight: 900;
+    /* Extra bold for pop */
     letter-spacing: -0.04em;
-    color: #F8FAFC;
+    color: var(--text-main);
 }
 
-/* Rotating Word Animation - Hyperflow Style (Slide Up + Fade) */
+/* Rotating Word Animation */
 .rotating-word-container {
     display: inline-block;
     overflow: hidden;
@@ -132,7 +193,7 @@
 
 .rotating-word {
     display: inline-block;
-    background: #ffffff;
+    background: var(--text-main);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -163,132 +224,145 @@
 }
 
 .text-gradient-purple {
-    background: #60A5FA;
+    /* Updated to vibrant Blue -> Teal gradient */
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-teal) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
-/* 4. GLASS CARDS (Green, Orange, Purple) */
+/* 4. GLASS CARDS - "Pop" Style */
 .glass-card-solid {
-    background: rgba(20, 20, 20, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    /* Crisper border */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-bottom-color: rgba(220, 220, 220, 0.4);
+    /* Deeper shadow */
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.glass-card-solid:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.15);
 }
 
 .glass-card-green {
-    background: linear-gradient(135deg, rgba(6, 78, 59, 0.8) 0%, rgba(6, 78, 59, 0.4) 100%);
-    border: 1px solid rgba(52, 211, 153, 0.3);
+    /* Keeping the green theme but sharper */
+    background: white;
+    border: 2px solid rgba(16, 185, 129, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(16, 185, 129, 0.15);
     backdrop-filter: blur(20px);
 }
 
 .product-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: white;
+    border-radius: 24px;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
 }
 
-.card-green:hover {
-    box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
-}
-
-.card-orange:hover {
-    box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15);
-}
-
-.card-purple:hover {
-    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
-}
-
-/* Tier-based Product Buttons - Transparent to Solid on Hover */
+/* Tier-based Product Buttons - Solid & Vibrant */
 .product-card .btn {
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    border-width: 2px !important;
+    font-weight: 700;
 }
 
-/* Plus - Green */
+/* Plus - Teal */
 .btn-tier-plus {
-    background: transparent !important;
-    border: 1px solid #10B981 !important;
-    color: #10B981 !important;
+    background: white !important;
+    border: 2px solid var(--primary-teal) !important;
+    color: var(--primary-teal) !important;
 }
 
 .btn-tier-plus:hover {
-    background: #10B981 !important;
+    background: var(--primary-teal) !important;
     color: white !important;
+    box-shadow: 0 10px 20px -5px rgba(13, 148, 136, 0.3);
 }
 
-/* Bronze - Brown */
+/* Bronze - Orange/Brown */
 .btn-tier-bronze {
-    background: transparent !important;
-    border: 1px solid #B45309 !important;
-    color: #B45309 !important;
+    background: white !important;
+    border: 2px solid #D97706 !important;
+    color: #D97706 !important;
 }
 
 .btn-tier-bronze:hover {
-    background: #B45309 !important;
+    background: #D97706 !important;
     color: white !important;
+    box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.3);
 }
 
-/* Silver - Grey */
+/* Silver - Slate */
 .btn-tier-silver {
-    background: transparent !important;
-    border: 1px solid #9CA3AF !important;
-    color: #9CA3AF !important;
+    background: white !important;
+    border: 2px solid #64748B !important;
+    color: #64748B !important;
 }
 
 .btn-tier-silver:hover {
-    background: #9CA3AF !important;
-    color: #1F2937 !important;
+    background: #64748B !important;
+    color: white !important;
+    box-shadow: 0 10px 20px -5px rgba(100, 116, 139, 0.3);
 }
 
-/* Gold - Gold */
+/* Gold - Amber */
 .btn-tier-gold {
-    background: transparent !important;
-    border: 1px solid #F59E0B !important;
+    background: white !important;
+    border: 2px solid #F59E0B !important;
     color: #F59E0B !important;
 }
 
 .btn-tier-gold:hover {
     background: #F59E0B !important;
-    color: #1F2937 !important;
+    color: white !important;
+    box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.3);
 }
 
 /* Diamond - Blue */
 .btn-tier-diamond {
-    background: transparent !important;
-    border: 1px solid #3B82F6 !important;
-    color: #3B82F6 !important;
+    background: white !important;
+    border: 2px solid var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
 }
 
 .btn-tier-diamond:hover {
-    background: #3B82F6 !important;
+    background: var(--primary-blue) !important;
     color: white !important;
+    box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.3);
 }
 
 /* VVIP - Purple */
 .btn-tier-vvip {
-    background: transparent !important;
-    border: 1px solid #8B5CF6 !important;
+    background: white !important;
+    border: 2px solid #8B5CF6 !important;
     color: #8B5CF6 !important;
 }
 
 .btn-tier-vvip:hover {
     background: #8B5CF6 !important;
     color: white !important;
+    box-shadow: 0 10px 20px -5px rgba(139, 92, 246, 0.3);
 }
 
 /* Default */
 .btn-tier-default {
-    background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    color: rgba(255, 255, 255, 0.7) !important;
+    background: white !important;
+    border: 2px solid #E2E8F0 !important;
+    color: var(--text-muted) !important;
 }
 
 .btn-tier-default:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: var(--text-main) !important;
+    border-color: var(--text-main) !important;
     color: white !important;
 }
 
@@ -298,10 +372,10 @@
     overflow-y: hidden;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 20px;
-    /* Space for scrollbar */
+    padding-bottom: 30px;
+    /* More space for shadows */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .scrolling-wrapper::-webkit-scrollbar {
@@ -309,50 +383,199 @@
 }
 
 .scrolling-wrapper::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 10px;
 }
 
 .scrolling-wrapper::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
 }
 
 .step-card {
     white-space: normal;
-    /* Reset for text wrapping inside card */
     min-height: 320px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .step-card:hover {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: white;
+    border-color: transparent !important;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
 }
 
 /* UTILS */
 .bg-black-contrast {
-    background: #080808;
+    background: #F8FAFC;
 }
 
 .text-white-50 {
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: var(--text-muted) !important;
+    /* Muted slate */
 }
 
 .ls-1 {
     letter-spacing: 1px;
 }
 
-/* Container - Reduce side padding */
+/* Container */
 .container {
     max-width: 1400px;
     padding-left: 24px;
     padding-right: 24px;
 }
 
+/* 6. FUTURISTIC HERO ASSET */
+.hero-asset-container {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.futuristic-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 32px;
+    padding: 2rem;
+    box-shadow:
+        0 40px 80px -20px rgba(13, 148, 136, 0.15),
+        0 20px 40px -20px rgba(37, 99, 235, 0.15),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    transform: rotateY(-10deg) rotateX(5deg);
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    z-index: 10;
+}
+
+.futuristic-card:hover {
+    transform: rotateY(0deg) rotateX(0deg) translateY(-10px);
+    box-shadow:
+        0 50px 100px -20px rgba(13, 148, 136, 0.2),
+        0 30px 60px -20px rgba(37, 99, 235, 0.2);
+}
+
+/* Floating Elements Animation */
+@keyframes float-gentle {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+@keyframes float-delay {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.float-element-1 {
+    animation: float-gentle 4s ease-in-out infinite;
+}
+
+.float-element-2 {
+    animation: float-delay 5s ease-in-out infinite 1s;
+}
+
+/* Virtual Card Visual */
+.virtual-card {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.4);
+}
+
+.virtual-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.card-chip {
+    width: 40px;
+    height: 30px;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    border-radius: 6px;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-chip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-number {
+    font-family: monospace;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Glowing Stats */
+.glow-stat-box {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: 1rem;
+    backdrop-filter: blur(12px);
+}
+
+.glow-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.glow-icon.teal {
+    background: rgba(13, 148, 136, 0.1);
+    color: var(--primary-teal);
+    box-shadow: 0 0 20px rgba(13, 148, 136, 0.2);
+}
+
+.glow-icon.blue {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary-blue);
+    box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+}
+
+/* Container modifications for desktop */
 @media (min-width: 1200px) {
     .container {
         padding-left: 48px;
@@ -363,5 +586,110 @@
 @media (min-width: 1600px) {
     .container {
         max-width: 1500px;
+    }
+}
+
+/* 6. TIPS BIJAK SECTION */
+.tip-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tip-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+details.faq-item>summary {
+    list-style: none;
+    outline: none;
+}
+
+details.faq-item>summary::-webkit-details-marker {
+    display: none;
+}
+
+details.faq-item .bi-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+details.faq-item[open] .bi-chevron-down {
+    transform: rotate(180deg);
+}
+
+details.faq-item[open] .glass-card-solid {
+    background: white;
+    border-color: var(--primary-teal);
+    box-shadow: 0 10px 30px -5px rgba(13, 148, 136, 0.15);
+}
+
+details.faq-item .faq-answer {
+    animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 8. TAHAPAN TIMELINE */
+.step-item {
+    position: relative;
+    z-index: 2;
+}
+
+.icon-circle {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-item:hover .icon-circle {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.step-box {
+    transition: transform 0.3s ease;
+}
+
+.step-item:hover .step-box {
+    transform: translateY(-2px);
+}
+
+/* Mobile Timeline Adjustments */
+@media (max-width: 991.98px) {
+
+    /* Hide horizontal line */
+    .d-lg-block {
+        display: none !important;
+    }
+
+    /* Add vertical connecting line for mobile */
+    .text-center.step-item::after {
+        content: '';
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 100%;
+        background: #e0e0e0;
+        z-index: -1;
+    }
+
+    /* Remove vertical line for the last item */
+    .col-lg:last-child .step-item::after {
+        display: none;
+    }
+
+    /* Adjust spacing */
+    .step-item {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
     }
 }

@@ -20,7 +20,7 @@ import { User, Role } from '../../../core/models';
 
     <div class="glass-card-solid p-4">
       <!-- Tabs -->
-      <div class="user-tabs mb-4">
+      <div class="glass-tabs mb-4">
         <button 
           class="tab-btn" 
           [class.active]="activeTab === 'staff'"
@@ -174,28 +174,26 @@ import { User, Role } from '../../../core/models';
                 </div>
               }
               
-              <div class="mb-3">
-                <label class="form-label">Roles <span class="text-danger">*</span></label>
-                @if (isCustomerUser()) {
-                  <p class="text-muted small mb-2"><i class="bi bi-info-circle me-1"></i>Role CUSTOMER tidak dapat diubah</p>
-                }
-                <div class="role-checkboxes">
-                  @for (role of roles(); track role.id) {
-                    <div class="form-check">
-                      <input 
-                        type="checkbox" 
-                        class="form-check-input" 
-                        [id]="'role-' + role.id"
-                        [checked]="isRoleSelected(role.id)"
-                        (change)="toggleRole(role.id)"
-                        [disabled]="isCustomerUser()">
-                      <label class="form-check-label" [for]="'role-' + role.id">
-                        {{ role.name }}
-                      </label>
-                    </div>
-                  }
+              @if (!isCustomerUser()) {
+                <div class="mb-3">
+                  <label class="form-label">Roles <span class="text-danger">*</span></label>
+                  <div class="role-checkboxes">
+                    @for (role of roles(); track role.id) {
+                      <div class="form-check">
+                        <input 
+                          type="checkbox" 
+                          class="form-check-input" 
+                          [id]="'role-' + role.id"
+                          [checked]="isRoleSelected(role.id)"
+                          (change)="toggleRole(role.id)">
+                        <label class="form-check-label" [for]="'role-' + role.id">
+                          {{ role.name }}
+                        </label>
+                      </div>
+                    }
+                  </div>
                 </div>
-              </div>
+              }
               
               @if (modalMode === 'edit') {
                 <div class="mb-3">
@@ -227,51 +225,6 @@ import { User, Role } from '../../../core/models';
     }
   `,
   styles: [`
-    /* Tabs - Modern Pill Style */
-    .user-tabs {
-      display: flex;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 6px;
-      border-radius: 16px;
-      width: fit-content;
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 24px;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tab-btn:hover {
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .tab-btn.active {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(20, 184, 166, 0.3) 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-    }
-    .tab-btn i {
-      font-size: 16px;
-    }
-    .tab-count {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .tab-btn.active .tab-count {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
     /* Role Badges - Transparent */
     .role-badge {
       padding: 4px 10px;
@@ -283,23 +236,23 @@ import { User, Role } from '../../../core/models';
     }
     .role-super-admin {
       background: rgba(239, 68, 68, 0.15);
-      color: #F87171;
+      color: #EF4444;
     }
     .role-marketing {
       background: rgba(6, 182, 212, 0.15);
-      color: #22D3EE;
+      color: #06B6D4;
     }
     .role-branch-manager {
       background: rgba(245, 158, 11, 0.15);
-      color: #FBBF24;
+      color: #F59E0B;
     }
     .role-back-office {
       background: rgba(107, 114, 128, 0.15);
-      color: #9CA3AF;
+      color: #64748B;
     }
     .role-customer {
       background: rgba(34, 197, 94, 0.15);
-      color: #4ADE80;
+      color: #10B981;
     }
 
     /* User Avatar */
@@ -316,7 +269,7 @@ import { User, Role } from '../../../core/models';
       font-size: 14px;
     }
     .user-avatar-sm.customer-avatar {
-      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      background: linear-gradient(135deg, #2DD4BF 0%, #0F766E 100%);
     }
 
     /* Modal */
@@ -347,18 +300,18 @@ import { User, Role } from '../../../core/models';
     }
     .modal-header {
       padding: 20px 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Lighter border */
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
     }
-    .modal-title { font-weight: 600; margin: 0; color: white; }
+    .modal-title { font-weight: 600; margin: 0; color: var(--text-primary); } /* Black/Dark text */
     .btn-close {
       background: transparent; border: none;
       font-size: 24px; cursor: pointer;
       opacity: 0.5; line-height: 1;
-      color: white;
+      color: var(--text-primary); /* Dark close button */
     }
     .btn-close:hover { opacity: 1; }
     .modal-body {
@@ -368,20 +321,82 @@ import { User, Role } from '../../../core/models';
     }
     .modal-footer {
       padding: 16px 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(0, 0, 0, 0.05); /* Lighter border */
       display: flex;
       justify-content: flex-end;
       gap: 12px;
       flex-shrink: 0;
     }
     .role-checkboxes { display: flex; flex-wrap: wrap; gap: 12px; }
-    .form-check {
-      background: rgba(45, 55, 72, 0.6);
-      padding: 10px 16px;
-      border-radius: 8px;
+    
+    /* Custom styles specifically for ROLE checkboxes */
+    .role-checkboxes .form-check {
+      background: transparent;
+      padding: 0; 
+      min-height: auto;
+      border-radius: 0;
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .form-check-label { color: rgba(255, 255, 255, 0.8); }
+    
+    .role-checkboxes .form-check-label { 
+      color: #000000 !important;
+      font-weight: 500; 
+      cursor: pointer;
+    }
+    
+    .role-checkboxes .form-check-input {
+      margin: 0;
+      float: none;
+      position: static;
+      border-color: rgba(0,0,0,0.3);
+      width: 18px;
+      height: 18px;
+    }
+    
+    .role-checkboxes .form-check-input:checked {
+      background-color: #2563EB;
+      border-color: #2563EB;
+    }
+    
+    /* Ensure disabled labels are still black */
+    .role-checkboxes .form-check-input:disabled ~ .form-check-label {
+      color: #000000 !important;
+      opacity: 1 !important;
+    }
+
+    /* Switch override for Active toggle */
+    .form-switch .form-check-input {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+      width: 2em;
+      height: 1em;
+      margin-left: -2.5em; /* Restore bootstrap margin for switch */
+      background-position: left center;
+      border-radius: 2em;
+      transition: background-position .15s ease-in-out;
+    }
+    .form-switch .form-check-input:checked {
+      background-position: right center;
+      background-color: #2563EB;
+      border-color: #2563EB;
+    }
+    .form-switch .form-check-label {
+      color: #000000 !important; /* Force black label for active switch too */
+      font-weight: 500;
+      padding-left: 0.5rem;
+    }
+
+    /* Info text for customer role */
+    .text-info-dark {
+      color: #000000;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
   `]
 })
 export class UserListComponent implements OnInit {

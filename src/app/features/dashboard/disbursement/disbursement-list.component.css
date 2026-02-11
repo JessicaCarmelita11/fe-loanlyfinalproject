@@ -1,14 +1,14 @@
-/* Summary Cards - Dark Theme */
+/* Summary Cards - Light Theme */
 .disbursement-summary {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 12px;
     padding: 20px;
 }
 
 .summary-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 10px;
     padding: 16px;
     text-align: center;
@@ -29,7 +29,7 @@
 
 .summary-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -38,7 +38,7 @@
 .summary-value {
     font-size: 20px;
     font-weight: 700;
-    color: #F1F5F9;
+    color: var(--text-primary);
 }
 
 /* Modal Styles - Dark Theme */
@@ -77,7 +77,7 @@
 
 .modal-header {
     padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -86,7 +86,7 @@
 .modal-title {
     font-weight: 600;
     margin: 0;
-    color: #F1F5F9;
+    color: var(--text-primary);
 }
 
 .btn-close {
@@ -96,7 +96,7 @@
     cursor: pointer;
     opacity: 0.5;
     line-height: 1;
-    color: #F1F5F9;
+    color: var(--text-primary);
 }
 
 .btn-close:hover {
@@ -109,7 +109,7 @@
 
 .modal-footer {
     padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: flex-end;
     gap: 12px;
@@ -126,18 +126,18 @@
     border: none;
 }
 
-/* Dark theme table in modal */
+/* Light theme table in modal */
 .table-sm {
-    color: #F1F5F9;
+    color: var(--text-primary);
 }
 
 .table-sm td {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 0, 0, 0.05);
     padding: 8px 0;
 }
 
 .table-sm strong {
-    color: #F1F5F9;
+    color: var(--text-primary);
     background: transparent;
 }
 
@@ -150,6 +150,6 @@
 }
 
 .alert-info strong {
-    color: #F1F5F9;
+    color: var(--text-primary);
     background: transparent;
 }

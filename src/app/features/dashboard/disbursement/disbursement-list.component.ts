@@ -1,4 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
@@ -12,6 +13,7 @@ import { Disbursement } from '../../../core/models';
 })
 export class DisbursementListComponent implements OnInit {
   private apiService = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
 
   disbursements = signal<Disbursement[]>([]);
   isLoading = signal(true);
@@ -124,5 +126,9 @@ export class DisbursementListComponent implements OnInit {
     const item = this.selectedDisbursement();
     if (!item || !item.tenorMonth) return 0;
     return (item.totalAmount || 0) / item.tenorMonth;
+  }
+  getMapUrl(lat: number, long: number): SafeResourceUrl {
+    const url = `https://maps.google.com/maps?q=${lat},${long}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

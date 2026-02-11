@@ -75,7 +75,7 @@ interface DashboardStats {
             <i class="bi bi-cash-stack"></i>
           </div>
           <div class="stat-value">{{ stats().disbursed }}</div>
-          <div class="stat-label">Disbursed</div>
+          <div class="stat-label">Waiting Disbursement</div>
         </div>
       </div>
     </div>
@@ -205,45 +205,23 @@ interface DashboardStats {
       color: #4ADE80;
     }
     
-    /* Glass Card Overrides */
-    .glass-card-solid {
-      background: rgba(45, 55, 72, 0.6);
-      backdrop-filter: blur(20px) saturate(150%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      color: white;
-    }
-    
-    .glass-card-solid h5 {
-      color: white;
-      font-weight: 600;
-    }
-    
-    .text-muted {
-      color: rgba(255, 255, 255, 0.5) !important;
-    }
-    
-    .small {
-      color: rgba(255, 255, 255, 0.6);
-    }
-    
     .text-success {
-      color: #4ADE80 !important;
+      color: #16A34A !important;
     }
     
     .text-primary {
-      color: #60A5FA !important;
+      color: #2563EB !important;
     }
     
     .fs-4.fw-bold.text-success {
-      background: linear-gradient(135deg, #22C55E 0%, #4ADE80 100%);
+      background: linear-gradient(135deg, #16A34A 0%, #22C55E 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     
     .fs-4.fw-bold.text-primary {
-      background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+      background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -252,7 +230,7 @@ interface DashboardStats {
     .btn-outline-primary {
       background: rgba(59, 130, 246, 0.1);
       border: 1px solid rgba(59, 130, 246, 0.3);
-      color: rgba(255, 255, 255, 0.9);
+      color: #2563EB;
       border-radius: 12px;
       padding: 12px 20px;
       transition: all 0.3s ease;
@@ -264,12 +242,12 @@ interface DashboardStats {
     .btn-outline-primary:hover {
       background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
       border-color: rgba(59, 130, 246, 0.5);
-      color: white;
+      color: #1E40AF;
       transform: translateX(4px);
     }
     
     .btn-outline-primary i {
-      color: #60A5FA;
+      color: #3B82F6;
     }
     
     .btn-outline-primary.active {
@@ -324,57 +302,47 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   loadDashboardStats() {
     const baseUrl = environment.apiUrl;
 
-    // Fetch stats from dashboard endpoint or fallback to counting from multiple endpoints
-    this.http.get<any>(`${baseUrl}/admin/dashboard-stats`).pipe(
-      catchError(() => {
-        // Fallback: Fetch from multiple endpoints if dashboard-stats doesn't exist
-        return forkJoin({
-          pendingReview: this.http.get<any>(`${baseUrl}/marketing/plafond-applications/pending`).pipe(catchError(() => of({ data: [] }))),
-          waitingApproval: this.http.get<any>(`${baseUrl}/branch-manager/plafond-applications/pending`).pipe(catchError(() => of({ data: [] }))),
-          approved: this.http.get<any>(`${baseUrl}/admin/customers/approved`).pipe(catchError(() => of({ data: [] }))),
-          disbursements: this.http.get<any>(`${baseUrl}/back-office/disbursements/pending`).pipe(catchError(() => of({ data: [] }))),
-          allHistory: this.http.get<any>(`${baseUrl}/admin/plafond-histories`).pipe(catchError(() => of({ data: [] })))
-        });
-      })
-    ).subscribe({
+    // Direct calculation from multiple endpoints (since dashboard-stats endpoint is missing)
+    forkJoin({
+      pendingReview: this.http.get<any>(`${baseUrl}/marketing/plafond-applications/pending`).pipe(catchError(() => of({ data: [] }))),
+      waitingApproval: this.http.get<any>(`${baseUrl}/branch-manager/plafond-applications/pending`).pipe(catchError(() => of({ data: [] }))),
+      approved: this.http.get<any>(`${baseUrl}/admin/customers/approved`).pipe(catchError(() => of({ data: [] }))),
+      disbursements: this.http.get<any>(`${baseUrl}/back-office/disbursements/pending`).pipe(catchError(() => of({ data: [] }))),
+      allHistory: this.http.get<any>(`${baseUrl}/admin/plafond-histories`).pipe(catchError(() => of({ data: [] })))
+    }).subscribe({
       next: (response: any) => {
-        if (response.data && response.success) {
-          // Direct stats from backend
-          this.stats.set(response.data);
-        } else {
-          // Calculate from multiple sources
-          const pending = response.pendingReview?.data?.length || 0;
-          const waiting = response.waitingApproval?.data?.length || 0;
-          const approved = response.approved?.data?.length || 0;
-          const disbursements = response.disbursements?.data || [];
-          const allHistory = response.allHistory?.data || [];
+        // Calculate from multiple sources
+        const pending = response.pendingReview?.data?.length || 0;
+        const waiting = response.waitingApproval?.data?.length || 0;
+        const approved = response.approved?.data?.length || 0;
+        const disbursements = response.disbursements?.data || [];
+        const allHistory = response.allHistory?.data || [];
 
-          // Count disbursed from history
-          const disbursedCount = allHistory.filter((h: any) =>
-            h.newStatus === 'DISBURSED' || h.status === 'DISBURSED'
-          ).length;
+        // Count disbursed from history
+        const disbursedCount = allHistory.filter((h: any) =>
+          h.newStatus === 'DISBURSED' || h.status === 'DISBURSED'
+        ).length;
 
-          // Calculate totals from approved customers
-          const approvedData = response.approved?.data || [];
-          let totalDisbursed = 0;
-          let totalRevenue = 0;
+        // Calculate totals from approved customers
+        const approvedData = response.approved?.data || [];
+        let totalDisbursed = 0;
+        let totalRevenue = 0;
 
-          approvedData.forEach((c: any) => {
-            totalDisbursed += c.usedAmount || 0;
-            // Estimate revenue: usedAmount + 12.5% interest (default rate)
-            totalRevenue += (c.usedAmount || 0) * 1.125;
-          });
+        approvedData.forEach((c: any) => {
+          totalDisbursed += c.usedAmount || 0;
+          // Estimate revenue: usedAmount + 12.5% interest (default rate)
+          totalRevenue += (c.usedAmount || 0) * 1.125;
+        });
 
-          this.stats.set({
-            totalApplications: pending + waiting + approved + disbursedCount,
-            pendingReview: pending,
-            waitingApproval: waiting,
-            approved: approved,
-            disbursed: disbursedCount || disbursements.length,
-            totalDisbursedAmount: totalDisbursed,
-            totalExpectedRevenue: totalRevenue
-          });
-        }
+        this.stats.set({
+          totalApplications: pending + waiting + approved + disbursedCount,
+          pendingReview: pending,
+          waitingApproval: waiting,
+          approved: approved,
+          disbursed: disbursedCount || disbursements.length,
+          totalDisbursedAmount: totalDisbursed,
+          totalExpectedRevenue: totalRevenue
+        });
       }
     });
   }
@@ -435,20 +403,22 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     const labels = data.labels || ['Gold', 'Silver', 'Bronze', 'Diamond'];
     const counts = data.counts || [12, 25, 18, 8];
 
-    // Generate dynamic colors based on number of plafonds
-    const colorPalette = [
-      { bg: 'rgba(102, 126, 234, 0.8)', border: 'rgba(102, 126, 234, 1)' },   // Purple
-      { bg: 'rgba(40, 167, 69, 0.8)', border: 'rgba(40, 167, 69, 1)' },       // Green
-      { bg: 'rgba(255, 193, 7, 0.8)', border: 'rgba(255, 193, 7, 1)' },       // Yellow
-      { bg: 'rgba(23, 162, 184, 0.8)', border: 'rgba(23, 162, 184, 1)' },     // Teal
-      { bg: 'rgba(220, 53, 69, 0.8)', border: 'rgba(220, 53, 69, 1)' },       // Red
-      { bg: 'rgba(111, 66, 193, 0.8)', border: 'rgba(111, 66, 193, 1)' },     // Indigo
-      { bg: 'rgba(253, 126, 20, 0.8)', border: 'rgba(253, 126, 20, 1)' },     // Orange
-      { bg: 'rgba(32, 201, 151, 0.8)', border: 'rgba(32, 201, 151, 1)' }      // Mint
-    ];
+    // Map colors based on Plafond Name (ignoring case)
+    const getColorForPlafond = (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('plus')) return { bg: 'rgba(230, 245, 242, 1)', border: 'rgba(127, 219, 202, 1)' }; // Greenish/Mint
+      if (n.includes('bronze')) return { bg: 'rgba(247, 235, 227, 1)', border: 'rgba(234, 158, 87, 1)' }; // Orange/Brown
+      if (n.includes('silver')) return { bg: 'rgba(244, 246, 251, 1)', border: 'rgba(148, 163, 184, 1)' }; // Silver
+      if (n.includes('gold')) return { bg: 'rgba(255, 249, 235, 1)', border: 'rgba(251, 191, 36, 1)' };   // Gold
+      if (n.includes('diamond')) return { bg: 'rgba(235, 245, 255, 1)', border: 'rgba(96, 165, 250, 1)' }; // Blue-ish
+      if (n.includes('vvip')) return { bg: 'rgba(245, 240, 255, 1)', border: 'rgba(167, 139, 250, 1)' };  // Purple
 
-    const colors = labels.map((_: string, i: number) => colorPalette[i % colorPalette.length].bg);
-    const borderColors = labels.map((_: string, i: number) => colorPalette[i % colorPalette.length].border);
+      // Default fallback
+      return { bg: 'rgba(100, 116, 139, 0.2)', border: 'rgba(100, 116, 139, 0.5)' };
+    };
+
+    const colors = labels.map((label: string) => getColorForPlafond(label).bg);
+    const borderColors = labels.map((label: string) => getColorForPlafond(label).border);
 
     this.chart = new Chart(ctx, {
       type: 'bar',

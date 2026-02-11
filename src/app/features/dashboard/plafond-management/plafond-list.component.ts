@@ -1,12 +1,13 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Plafond } from '../../../core/models';
 
 @Component({
   selector: 'app-plafond-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="page-header d-flex justify-content-between align-items-start">
       <div>
@@ -58,7 +59,7 @@ import { Plafond } from '../../../core/models';
                     </span>
                   </td>
                   <td class="text-end">
-                    <button class="btn btn-sm btn-outline-primary me-1" (click)="openEditModal(plafond)" title="Edit">
+                    <button class="btn btn-sm btn-outline-primary me-1" [routerLink]="['/dashboard/plafonds', plafond.id]" title="Edit & Manage Rates">
                       <i class="bi bi-pencil"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-danger" (click)="deletePlafond(plafond)" title="Delete">
@@ -185,6 +186,7 @@ import { Plafond } from '../../../core/models';
 })
 export class PlafondListComponent implements OnInit {
   private apiService = inject(ApiService);
+  private router = inject(Router);
 
   plafonds = signal<Plafond[]>([]);
   isLoading = signal(true);

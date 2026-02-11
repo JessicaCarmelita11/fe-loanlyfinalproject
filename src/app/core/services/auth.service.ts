@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthUser, LoginRequest, AuthResponse } from '../models';
+import { AuthUser, LoginRequest, AuthResponse, ChangePasswordRequest } from '../models';
 
 @Injectable({
     providedIn: 'root'
@@ -146,5 +146,11 @@ export class AuthService {
             token,
             newPassword
         });
+    }
+    /**
+     * Change password for authenticated user
+     */
+    changePassword(data: ChangePasswordRequest): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/profile/change-password`, data);
     }
 }

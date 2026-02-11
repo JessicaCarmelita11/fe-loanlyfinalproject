@@ -110,7 +110,7 @@
 
             <div class="row g-4">
                 <div class="col-md-6">
-                    <h6 class="text-muted mb-3">Detail Pencairan</h6>
+                    <h6 class="text-dark fw-bold mb-3">Detail Pencairan</h6>
                     <table class="table table-sm">
                         <tr>
                             <td class="text-muted">Plafond</td>
@@ -129,7 +129,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <h6 class="text-muted mb-3">Informasi Pengajuan</h6>
+                    <h6 class="text-dark fw-bold mb-3">Informasi Pengajuan</h6>
                     <table class="table table-sm">
                         <tr>
                             <td class="text-muted">Tanggal Pengajuan</td>
@@ -140,9 +140,47 @@
                             <td><span class="badge-status badge-pending">{{ selectedDisbursement()?.status }}</span>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="text-muted">Bank Name</td>
+                            <td><strong>{{ selectedDisbursement()?.bankName || '-' }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Account No.</td>
+                            <td><strong>{{ selectedDisbursement()?.accountNumber || '-' }}</strong></td>
+                        </tr>
                     </table>
                 </div>
             </div>
+
+            <!-- Location Section -->
+            @if (selectedDisbursement()?.requestLatitude && selectedDisbursement()?.requestLongitude) {
+            <div class="mt-4">
+                <h6 class="text-dark fw-bold mb-3"><i class="bi bi-geo-alt me-2"></i>Submission Location</h6>
+                <div class="glass-card-solid p-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-geo-alt-fill text-danger fs-5 me-3"></i>
+                        <div>
+                            <div class="small text-muted">GPS Coordinates</div>
+                            <div class="fw-bold">{{ selectedDisbursement()?.requestLatitude }}, {{
+                                selectedDisbursement()?.requestLongitude }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Map Preview -->
+                    <div class="map-container mb-3 border rounded overflow-hidden" style="height: 200px;">
+                        <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                            [src]="getMapUrl(selectedDisbursement()?.requestLatitude || 0, selectedDisbursement()?.requestLongitude || 0)"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <a [href]="'https://www.google.com/maps?q=' + selectedDisbursement()?.requestLatitude + ',' + selectedDisbursement()?.requestLongitude"
+                        target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-map me-1"></i> Open in Google Maps
+                    </a>
+                </div>
+            </div>
+            }
 
             <hr>
 

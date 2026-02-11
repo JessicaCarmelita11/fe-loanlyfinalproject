@@ -1,4 +1,5 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
@@ -12,6 +13,7 @@ import { UserPlafond } from '../../../core/models';
 })
 export class ReviewListComponent implements OnInit {
   private apiService = inject(ApiService);
+  private sanitizer = inject(DomSanitizer);
 
   applications = signal<UserPlafond[]>([]);
   isLoading = signal(true);
@@ -132,5 +134,9 @@ export class ReviewListComponent implements OnInit {
       link.click();
       document.body.removeChild(link);
     }
+  }
+  getMapUrl(lat: number, long: number): SafeResourceUrl {
+    const url = `https://maps.google.com/maps?q=${lat},${long}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }

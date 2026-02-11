@@ -27,6 +27,12 @@ export interface Role {
 }
 
 // Auth models
+export interface ChangePasswordRequest {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
 export interface LoginRequest {
     usernameOrEmail: string;
     password: string;
@@ -83,6 +89,8 @@ export interface UserPlafond {
     approvedAt?: string;
     rejectionNote?: string;
     documents?: any;
+    latitude?: number;  // Location: Latitude
+    longitude?: number; // Location: Longitude
 }
 
 export interface ApplicantInfo {
@@ -95,6 +103,10 @@ export interface ApplicantInfo {
     monthlyIncome: number;
     phone: string;
     npwp?: string;
+    applicationLatitude?: number;
+    applicationLongitude?: number;
+    bankName?: string;
+    accountNumber?: string;
 }
 
 export type PlafondStatus =
@@ -121,6 +133,10 @@ export interface Disbursement {
     disbursedByUsername?: string;
     note?: string;
     remainingLimit: number;
+    requestLatitude?: number;
+    requestLongitude?: number;
+    bankName?: string;
+    accountNumber?: string;
 }
 
 export type DisbursementStatus = 'PENDING' | 'DISBURSED' | 'CANCELLED';
@@ -133,11 +149,22 @@ export interface MenuItem {
     roles: string[];  // Which roles can see this menu
 }
 
-// Tenor Rate
+// Tenor Rate (per Plafond Tier)
 export interface TenorRate {
     id: number;
+    plafondId: number;
+    plafondName: string;
     tenorMonth: number;
     interestRate: number;
     description?: string;
     isActive: boolean;
+}
+
+// Create TenorRate Request
+export interface TenorRateRequest {
+    plafondId: number;
+    tenorMonth: number;
+    interestRate: number;
+    description?: string;
+    isActive?: boolean;
 }

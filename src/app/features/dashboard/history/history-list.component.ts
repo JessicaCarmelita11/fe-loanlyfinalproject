@@ -31,7 +31,7 @@ interface PlafondHistory {
     </div>
     
     <!-- Tabs - Modern Pill Style -->
-    <div class="history-tabs mb-4">
+    <div class="glass-tabs mb-4">
       <button class="tab-btn" [class.active]="activeTab() === 'plafond'" (click)="activeTab.set('plafond')">
         <i class="bi bi-credit-card"></i>
         Pengajuan Plafond
@@ -159,51 +159,6 @@ interface PlafondHistory {
     }
   `,
   styles: [`
-    /* Tabs - Modern Pill Style */
-    .history-tabs {
-      display: flex;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 6px;
-      border-radius: 16px;
-      width: fit-content;
-    }
-    .tab-btn {
-      background: transparent;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 24px;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tab-btn:hover {
-      color: rgba(255, 255, 255, 0.8);
-    }
-    .tab-btn.active {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(20, 184, 166, 0.3) 100%);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-    }
-    .tab-btn i {
-      font-size: 16px;
-    }
-    .tab-count {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .tab-btn.active .tab-count {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
     /* Role Badges - Transparent */
     .role-badge {
       padding: 4px 10px;
@@ -215,41 +170,41 @@ interface PlafondHistory {
     }
     .role-super-admin {
       background: rgba(239, 68, 68, 0.15);
-      color: #F87171;
+      color: #EF4444;
     }
     .role-marketing {
       background: rgba(6, 182, 212, 0.15);
-      color: #22D3EE;
+      color: #06B6D4;
     }
     .role-branch-manager {
       background: rgba(245, 158, 11, 0.15);
-      color: #FBBF24;
+      color: #F59E0B;
     }
     .role-back-office {
       background: rgba(107, 114, 128, 0.15);
-      color: #9CA3AF;
+      color: #64748B;
     }
     .role-customer {
       background: rgba(34, 197, 94, 0.15);
-      color: #4ADE80;
+      color: #10B981;
     }
 
     /* Status Badges */
     .badge-pending, .badge-waiting {
       background: rgba(255, 193, 7, 0.15);
-      color: #FBBF24;
+      color: #D97706;
     }
     .badge-approved, .badge-disbursed {
       background: rgba(34, 197, 94, 0.15);
-      color: #4ADE80;
+      color: #16A34A;
     }
     .badge-rejected, .badge-cancelled {
       background: rgba(239, 68, 68, 0.15);
-      color: #F87171;
+      color: #DC2626;
     }
     .badge-processing {
       background: rgba(6, 182, 212, 0.15);
-      color: #22D3EE;
+      color: #0891B2;
     }
   `]
 })

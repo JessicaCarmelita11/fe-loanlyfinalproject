@@ -66,7 +66,7 @@
         <div class="modal-body">
             <div class="row g-4">
                 <div class="col-md-6">
-                    <h6 class="text-muted mb-3">Applicant Information</h6>
+                    <h6 class="text-dark fw-bold mb-3">Applicant Information</h6>
                     <table class="table table-sm">
                         <tr>
                             <td class="text-muted">Customer</td>
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <h6 class="text-muted mb-3">Financial Information</h6>
+                    <h6 class="text-dark fw-bold mb-3">Financial Information</h6>
                     <table class="table table-sm">
                         <tr>
                             <td class="text-muted">Occupation</td>
@@ -127,6 +127,14 @@
                             <td class="text-muted">Applied Date</td>
                             <td>{{ formatDate(selectedApplication()?.registeredAt || '') }}</td>
                         </tr>
+                        <tr>
+                            <td class="text-muted">Bank Name</td>
+                            <td><strong>{{ selectedApplication()?.applicantDetail?.bankName || '-' }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Account No.</td>
+                            <td><strong>{{ selectedApplication()?.applicantDetail?.accountNumber || '-' }}</strong></td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -134,7 +142,7 @@
             <!-- Documents Section -->
             @if (selectedApplication()?.documents && selectedApplication()!.documents.length > 0) {
             <div class="mt-4">
-                <h6 class="text-muted mb-3"><i class="bi bi-file-earmark-text me-2"></i>Uploaded Documents</h6>
+                <h6 class="text-dark fw-bold mb-3"><i class="bi bi-file-earmark-text me-2"></i>Uploaded Documents</h6>
                 <div class="row g-3">
                     @for (doc of selectedApplication()!.documents; track doc.id || $index) {
                     <div class="col-md-3">
@@ -161,8 +169,39 @@
             </div>
             } @else {
             <div class="mt-4">
-                <h6 class="text-muted mb-3"><i class="bi bi-file-earmark-text me-2"></i>Uploaded Documents</h6>
+                <h6 class="text-dark fw-bold mb-3"><i class="bi bi-file-earmark-text me-2"></i>Uploaded Documents</h6>
                 <p class="text-muted small"><i class="bi bi-info-circle me-1"></i>No documents uploaded</p>
+            </div>
+            }
+
+            <!-- Location Section -->
+            @if (selectedApplication()?.applicantDetail?.applicationLatitude &&
+            selectedApplication()?.applicantDetail?.applicationLongitude) {
+            <div class="mt-4">
+                <h6 class="text-dark fw-bold mb-3"><i class="bi bi-geo-alt me-2"></i>Submission Location</h6>
+                <div class="glass-card-solid p-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-geo-alt-fill text-danger fs-5 me-3"></i>
+                        <div>
+                            <div class="small text-muted">GPS Coordinates</div>
+                            <div class="fw-bold">{{ selectedApplication()?.applicantDetail?.applicationLatitude }}, {{
+                                selectedApplication()?.applicantDetail?.applicationLongitude }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Map Preview -->
+                    <div class="map-container mb-3 border rounded overflow-hidden" style="height: 200px;">
+                        <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                            [src]="getMapUrl(selectedApplication()?.applicantDetail?.applicationLatitude || 0, selectedApplication()?.applicantDetail?.applicationLongitude || 0)"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <a [href]="'https://www.google.com/maps?q=' + selectedApplication()?.applicantDetail?.applicationLatitude + ',' + selectedApplication()?.applicantDetail?.applicationLongitude"
+                        target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-map me-1"></i> Open in Google Maps
+                    </a>
+                </div>
             </div>
             }
 

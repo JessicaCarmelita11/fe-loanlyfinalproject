@@ -59,6 +59,10 @@ export class ApiService {
         return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/admin/plafonds/${id}`);
     }
 
+    getPlafondById(id: number): Observable<ApiResponse<Plafond>> {
+        return this.http.get<ApiResponse<Plafond>>(`${this.baseUrl}/admin/plafonds/${id}`);
+    }
+
     // ========== MARKETING ENDPOINTS ==========
 
     getPendingReviewApplications(): Observable<ApiResponse<UserPlafond[]>> {

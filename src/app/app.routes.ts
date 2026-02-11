@@ -54,6 +54,12 @@ export const routes: Routes = [
                 data: { roles: ['SUPER_ADMIN'] }
             },
             {
+                path: 'plafonds/:id',
+                loadComponent: () => import('./features/dashboard/plafond-management/plafond-edit.component').then(m => m.PlafondEditComponent),
+                canActivate: [RoleGuard],
+                data: { roles: ['SUPER_ADMIN'] }
+            },
+            {
                 path: 'review',
                 loadComponent: () => import('./features/dashboard/review-plafond/review-list.component').then(m => m.ReviewListComponent),
                 canActivate: [RoleGuard],
