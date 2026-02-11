@@ -152,20 +152,7 @@
     transform: translateY(-1px);
 }
 
-.logo-box {
-    width: 36px;
-    height: 36px;
-    background: var(--text-main);
-    color: white;
-    border-radius: 12px;
-    /* Somewhat squarer for modern look */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 18px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-}
+
 
 /* 3. HERO SECTION */
 .hero-section {

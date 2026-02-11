@@ -1,5 +1,15 @@
 /* Dashboard Layout - Dribbble Style */
 
+
+/* Sidebar Logo Image */
+.sidebar-logo {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 8px;
+    /* Optional standard radius */
+}
+
 /* Sidebar Footer */
 .sidebar-footer {
     position: absolute;
