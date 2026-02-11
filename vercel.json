@@ -5,8 +5,8 @@
     "installCommand": "npm install",
     "rewrites": [
         {
-            "source": "/((?!.*\\.).*)",
-            "destination": "/index.html"
+            "source": "/api/:path*",
+            "destination": "http://34.51.197.37/:path*"
         }
     ]
 }
